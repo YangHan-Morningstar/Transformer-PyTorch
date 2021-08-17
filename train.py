@@ -50,14 +50,14 @@ for i in range(epochs):
     loop = tqdm(train_data_loader)
     model.train()
     for batch_i, (batch_src, batch_tar_inp, batch_tar_real) in enumerate(loop):
-        batch_src = batch_src.to(device)
-        batch_tar_inp = batch_tar_inp.to(device)
-        batch_tar_real = batch_tar_real.to(device)
-
         enc_padding_mask, combined_mask, dec_padding_mask = create_masks(
             batch_src,
             batch_tar_inp
         )
+
+        batch_src = batch_src.to(device)
+        batch_tar_inp = batch_tar_inp.to(device)
+        batch_tar_real = batch_tar_real.to(device)
 
         enc_padding_mask = enc_padding_mask.to(device)
         combined_mask = combined_mask.to(device)
@@ -77,9 +77,9 @@ for i in range(epochs):
 
         batch_loss = loss_fn(pre, real)
 
+        optimizer.zero_grad()
         batch_loss.backward()
         optimizer.step_and_update_lr()
-        optimizer.zero_grad()
 
         epoch_loss += batch_loss.item()
 
@@ -92,14 +92,14 @@ for i in range(epochs):
         val_epoch_loss = 0
         loop = tqdm(val_data_loader)
         for batch_i, (batch_src, batch_tar_inp, batch_tar_real) in enumerate(loop):
-            batch_src = batch_src.to(device)
-            batch_tar_inp = batch_tar_inp.to(device)
-            batch_tar_real = batch_tar_real.to(device)
-
             enc_padding_mask, combined_mask, dec_padding_mask = create_masks(
                 batch_src,
                 batch_tar_inp
             )
+
+            batch_src = batch_src.to(device)
+            batch_tar_inp = batch_tar_inp.to(device)
+            batch_tar_real = batch_tar_real.to(device)
 
             enc_padding_mask = enc_padding_mask.to(device)
             combined_mask = combined_mask.to(device)

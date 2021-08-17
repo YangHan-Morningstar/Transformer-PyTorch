@@ -31,14 +31,14 @@ model.eval()
 with torch.no_grad():
     loop = tqdm(test_data_loader)
     for batch_i, (batch_src, batch_tar_inp, batch_tar_real) in enumerate(loop):
-        batch_src = batch_src.to(device)
-        batch_tar_inp = batch_tar_inp.to(device)
-        batch_tar_real = batch_tar_real.to(device)
-
         enc_padding_mask, combined_mask, dec_padding_mask = create_masks(
             batch_src,
             batch_tar_inp
         )
+
+        batch_src = batch_src.to(device)
+        batch_tar_inp = batch_tar_inp.to(device)
+        batch_tar_real = batch_tar_real.to(device)
 
         enc_padding_mask = enc_padding_mask.to(device)
         combined_mask = combined_mask.to(device)

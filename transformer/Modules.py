@@ -7,7 +7,8 @@ import torch.nn.functional as F
 class PositionalEncoding(nn.Module):
     def __init__(self,
                  d_model,
-                 maxlen):
+                 maxlen,
+                 device):
         super(PositionalEncoding, self).__init__()
         den = torch.exp(-torch.arange(0, d_model, 2) * math.log(10000) / d_model)
         pos = torch.arange(0, maxlen).reshape(maxlen, 1)
@@ -15,7 +16,7 @@ class PositionalEncoding(nn.Module):
         pos_embedding[:, 0::2] = torch.sin(pos * den)
         pos_embedding[:, 1::2] = torch.cos(pos * den)
 
-        self.pos_embedding = pos_embedding.unsqueeze(0)
+        self.pos_embedding = pos_embedding.unsqueeze(0).to(device)
 
     def forward(self, x):
         x += self.pos_embedding[:, :x.size()[1], :]

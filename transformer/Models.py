@@ -14,14 +14,15 @@ class Encoder(nn.Module):
                  dff,
                  input_vocab_size,
                  maximum_position_encoding,
-                 dropout_rate=0.1):
+                 dropout_rate,
+                 device):
         super(Encoder, self).__init__()
 
         self.d_model = d_model
         self.num_layers = num_layers
 
         self.embedding = nn.Embedding(input_vocab_size, d_model)
-        self.pos_encoding = PositionalEncoding(d_model, maximum_position_encoding)
+        self.pos_encoding = PositionalEncoding(d_model, maximum_position_encoding, device)
 
         self.enc_layers = nn.ModuleList([
             EncoderLayer(d_model, num_heads, dff, dropout_rate)
@@ -52,14 +53,15 @@ class Decoder(nn.Module):
                  dff,
                  target_vocab_size,
                  maximum_position_encoding,
-                 dropout_rate=0.1):
+                 dropout_rate,
+                 device):
         super(Decoder, self).__init__()
 
         self.d_model = d_model
         self.num_layers = num_layers
 
         self.embedding = nn.Embedding(target_vocab_size, d_model)
-        self.pos_encoding = PositionalEncoding(d_model, maximum_position_encoding)
+        self.pos_encoding = PositionalEncoding(d_model, maximum_position_encoding, device)
 
         self.dec_layers = nn.ModuleList([
             DecoderLayer(d_model, num_heads, dff, dropout_rate)
@@ -98,7 +100,8 @@ class Transformer(nn.Module):
                  dff=2048,
                  position_encoding_input=512,
                  position_encoding_target=512,
-                 dropout_rate=0.1):
+                 dropout_rate=0.1,
+                 device="cpu"):
         super(Transformer, self).__init__()
 
         self.encoder = Encoder(
@@ -108,7 +111,8 @@ class Transformer(nn.Module):
             dff,
             input_vocab_size,
             position_encoding_input,
-            dropout_rate
+            dropout_rate,
+            device
         )
 
         self.decoder = Decoder(
@@ -118,7 +122,8 @@ class Transformer(nn.Module):
             dff,
             target_vocab_size,
             position_encoding_target,
-            dropout_rate
+            dropout_rate,
+            device
         )
 
         self.final_layer = nn.Linear(d_model, target_vocab_size)
