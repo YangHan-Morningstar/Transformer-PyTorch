@@ -1,4 +1,5 @@
 import torch
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 
 
 def create_padding_mask(seq):
@@ -24,6 +25,11 @@ def create_masks(inp, tar):
     combined_mask = torch.max(dec_target_padding_mask, look_ahead_mask)
 
     return enc_padding_mask, combined_mask, dec_padding_mask
+
+
+def compute_bleu(y_true, y_pred):
+    y_true = [y_true]
+    return sentence_bleu(y_true, y_pred, smoothing_function=SmoothingFunction().method1)
 
 
 if __name__ == '__main__':
